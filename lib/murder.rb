@@ -35,11 +35,18 @@ Capistrano::Configuration.instance(:must_exist).load do
 
   # get around the fact that find_servers does not work in role evaluation
   # (it tries to evaluate all roles, leading to infinite recursion)
-  role :peer do
-    roles.reject{|k,v| excluded_roles.include? k }.values.map{|r| r.servers }.flatten.uniq.reject{|s| s.options[:no_release] }
-  end
 
-  role(:tracker) { roles[:peer].servers.first }
-  role(:seeder) { roles[:peer].servers.first }
+  # Capistrano does not allow one to override a role definition. The automatic definitions below
+  # mess up blurby deploy, so we comment them out. The roles get explicitly defined in blurby --- see config/deploy/bittorrent_tasks.rb
+  # Note that murder will not work if you don't explicitly define these roles before invoking the murder:* tasks
+
+  # - Vikas Prasad, Feb 2013.
+  
+  #role :peer do
+  #  roles.reject{|k,v| excluded_roles.include? k }.values.map{|r| r.servers }.flatten.uniq.reject{|s| s.options[:no_release] }
+  #end
+
+  #role(:tracker) { roles[:peer].servers.first }
+  #role(:seeder) { roles[:peer].servers.first }
 
 end
