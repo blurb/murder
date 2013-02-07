@@ -1,3 +1,9 @@
+This is a clone of git://github.com/lg/murder.git with some very small modifications for use inside Blurb.
+
+- Vikas Prasad <vprasad@blurb.com>, Feb 2013.
+
+===========================================================================
+
 Murder by Larry Gadea <lg@twitter.com> and Matt Freels <freels@twitter.com>  
 
 Copyright 2010-2012 Twitter Inc.
