@@ -14,6 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Port range for seeding/peering can be specified as a range ("10000-12000") or
+# a single number ("8999")
+
+def parse_ports(ports)
+  return "" if ports.nil?
+
+  minport, maxport = ports.split("-")
+  if minport.to_i == 0
+    puts "Invalid value for ENV['ports']: ports"
+    exit(1)
+  end
+
+  maxport = minport if maxport == nil
+  return "--minport #{minport} --maxport #{maxport}"
+end
+
 namespace :murder do
   desc <<-DESC
   Compresses the directory specified by the passed-in argument 'files_path' and creates a .torrent file identified by the 'tag' argument. Be sure to use the same 'tag' value with any following commands. Any .git directories will be skipped. Once completed, the .torrent will be downloaded to your local /tmp/TAG.tgz.torrent.
@@ -70,7 +86,9 @@ namespace :murder do
       seeding_path = filename
     end
 
-    run "SCREENRC=/dev/null SYSSCREENRC=/dev/null screen -dms 'seeder-#{tag}' python #{remote_murder_path}/murder_client.py seeder '#{filename}.torrent' '#{seeding_path}' `LC_ALL=C host $HOSTNAME | awk '/has address/ {print $4}' | head -n 1`"
+    port_args = parse_ports(ENV['ports'])
+  
+    run "SCREENRC=/dev/null SYSSCREENRC=/dev/null screen -dms 'seeder-#{tag}' python #{remote_murder_path}/murder_client.py seeder '#{filename}.torrent' '#{seeding_path}' `LC_ALL=C host $HOSTNAME | awk '/has address/ {print $4}' | head -n 1` #{port_args}"
   end
 
   desc <<-DESC
@@ -114,7 +132,9 @@ namespace :murder do
       download_path = filename
     end
 
-    run "python #{remote_murder_path}/murder_client.py peer '#{filename}.torrent' '#{download_path}' `LC_ALL=C host $CAPISTRANO:HOST$ | awk '/has address/ {print $4}' | head -n 1`"
+    port_args = parse_ports(ENV['ports'])
+
+    run "python #{remote_murder_path}/murder_client.py peer '#{filename}.torrent' '#{download_path}' `LC_ALL=C host $CAPISTRANO:HOST$ | awk '/has address/ {print $4}' | head -n 1` #{port_args}"
 
     if !ENV['path_is_file']
       run "tar xf #{filename} -C #{destination_path}"
