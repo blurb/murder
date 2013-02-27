@@ -273,11 +273,11 @@ def run(params):
 
 if __name__ == '__main__':
 
-  if len(argv) != 5:
+  if len(argv) < 5:
     print "Incorrect number of arguments"
     print
     print """Usage:
-    python murder_client.py peer/seed out.torrent OUT.OUT 127.0.0.1
+    python murder_client.py peer/seed out.torrent OUT.OUT 127.0.0.1 [--bittornado_option <value> ...]
 
     The last parameter is the local ip address, normally 10.x.x.x
     """
@@ -286,6 +286,9 @@ if __name__ == '__main__':
   argv = ["--responsefile", sys.argv[2],
           "--saveas", sys.argv[3],
           "--ip", sys.argv[4]]
+
+  if len(argv) > 5:
+    argv += sys.argv[5:]
 
   isPeer = sys.argv[1] == "peer"
 
