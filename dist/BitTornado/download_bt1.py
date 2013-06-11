@@ -101,7 +101,7 @@ defaults = [
         'time to wait between requesting more peers'),
     ('min_peers', 20, 
         'minimum number of peers to not do rerequesting'),
-    ('http_timeout', 5, 
+    ('http_timeout', 20, 
         'number of seconds to wait before assuming that an http connection has timed out'),
     ('max_initiate', 40,
         'number of peers at which to stop initiating new connections'),
